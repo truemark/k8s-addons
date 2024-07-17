@@ -30,7 +30,7 @@ jobs:
         TF_DEBUG: "false"
         LOCAL_PATH: "terraform"
         DEBUG: "true"
-        TF_BACKEND_CONFIG: "backend.tfvars"
+        TF_BACKEND_CONFIG: "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
         AWS_ACCOUNT_IDS: "${{ secrets.AWS_ACCOUNT_ID }}"
     steps:
       - name: Checkout
@@ -38,10 +38,9 @@ jobs:
 
       - name: Add Backend Config
         run: |
-          echo "${{ secrets.TF_BACKEND_CONFIG }}" > "backend.tfvars"
-          echo "${{ secrets.TERRAFORM_TFVARS }}" > "terraform.tfvars"
-          ls
-          pwd
+          mkdir -p terraform/backends
+          echo "${{ secrets.TF_BACKEND_CONFIG }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+          echo "${{ secrets.TERRAFORM_TFVARS }}" > "terraform/terraform.tfvars"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
