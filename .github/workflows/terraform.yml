@@ -30,13 +30,12 @@ jobs:
         TF_DEBUG: "false"
         LOCAL_PATH: "terraform"
         DEBUG: "true"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: run
-        run: echo "${{ secrets.AWS_ASSUME_ROLE }}"
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE }}"
+          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
           aws-region: "us-east-2"
