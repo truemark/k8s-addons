@@ -1,0 +1,404 @@
+# Override the name for the app
+nameOverride: "hello-world"
+
+# -- Same as nameOverride but for the component.
+componentOverride: "backend"
+
+
+##########################################################
+# Deployment
+##########################################################
+deployment:
+  enabled: true
+  # By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25%
+  # You can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
+  # Reload deployment if configMap/secret updates
+  reloadOnChange: false
+
+  # Select nodes to deploy which matches the following labels
+  nodeSelector:
+    # cloud.google.com/gke-nodepool: default-pool
+
+  # Init containers which runs before the app container
+  hostAliases:
+  # - ip: "127.0.0.1"
+  #   hostnames:
+  #   - "foo.local"
+  #   - "bar.local"
+  # - ip: "10.1.2.3"
+  #   hostnames:
+  #   - "foo.remote"
+  #   - "bar.remote"
+
+  # Init containers which runs before the app container
+  initContainers:
+    init-contaner:
+      image: busybox
+      imagePullPolicy: IfNotPresent
+      command: ['/bin/sh']
+
+  # Additional labels for Deployment
+  additionalLabels:
+    # key: value
+
+  # Additional label added on pod which is used in Service's Label Selector
+  additionalPodLabels:
+    # env: prod
+
+  # Annotations on deployments
+  annotations:
+
+  # Additional Pod Annotations added on pod created by this Deployment
+  additionalPodAnnotations:
+    # key: value
+
+  # Replicas to be created
+  replicas:
+
+  # Secrets used to pull image
+  imagePullSecrets: ""
+
+  # If want to mount Envs from configmap or secret
+  envFrom:
+#    production-cm:
+#      type: configmap
+#      nameSuffix: my-configmap
+#    logging-config:
+#      type: configmap
+#      nameSuffix: your-configmap
+#    postgres-config:
+#      type: secret
+#      nameSuffix: postgres
+
+  # Environment variables to be passed to the app container
+  env:
+    MESSAGE:
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+#    FREQUENCY:
+#       valueFrom:
+#          configMapKeyRef:
+#             name: config
+#             key: frequency
+
+  # Volumes to be added to the pod
+  volumes:
+    code-config:
+      configMap:
+        name: '{{ template "k8s-app.name" . }}-code-config'
+#     secret-volume:
+#       secret:
+#         secretName: secret-name
+#     persistent-volume-name:
+#       persistentVolumeClaim:
+#         claimName: claim-name
+
+  # Mount path for Volumes
+  volumeMounts:
+    code-config:
+       mountPath: /tmp/myfile.json
+       subPath: myfile.json
+
+    # volume-name-2:
+    #    mountPath: path-2
+
+  # Taint tolerations for nodes
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "app"
+      effect: "NoSchedule"
+
+  # Pod affinity and pod anti-affinity allow you to specify rules about how pods should be placed relative to other pods.
+  affinity:
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: disktype
+  #          operator: In
+  #          values:
+  #          - ssd
+
+  # Topology spread constraints
+  topologySpreadConstraints:
+    # - maxSkew: 1
+    #   topologyKey: kubernetes.io/hostname
+    #   whenUnsatisfiable: ScheduleAnyway
+    #   labelSelector:
+    #     matchExpressions:
+    #     - key: disktype
+    #       operator: In
+    #       values:
+    #       - ssd
+    # - maxSkew: 1
+    #   topologyKey: topology.kubernetes.io/zone
+    #   whenUnsatisfiable: ScheduleAnyway
+    #   labelSelector:
+    #     matchExpressions:
+    #     - key: disktype
+    #       operator: In
+    #       values:
+    #       - ssd
+
+  # Number of ReplicaSet versions to retain
+  revisionHistoryLimit: 2
+
+  # Image of the app container
+  image:
+    repository: pijain/helloworld
+    tag: 0.0.1
+    pullPolicy: IfNotPresent
+  dnsConfig:
+    # options:
+    # - name: ndots
+    #   value: '1'
+  # Startup, Readiness and Liveness probes
+  probes:
+    startupProbe:
+      failureThreshold: 30
+      periodSeconds: 10
+      httpGet:
+        path: '/actuator/health'
+        port: 9000
+
+    readinessProbe:
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+      initialDelaySeconds: 10
+      httpGet:
+        path: '/actuator/health/readiness'
+        port: 9000
+
+    livenessProbe:
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+      initialDelaySeconds: 10
+      httpGet:
+        path: '/actuator/health/liveness'
+        port: 9000
+
+  # Resources to be defined for pod
+  resources:
+    limits:
+      memory: 256Mi
+      cpu: 0.5
+    requests:
+      memory: 128Mi
+      cpu: 0.1
+
+#  Security Context at Container Level
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+
+  # Security Context for the pod
+
+  securityContext:
+    # fsGroup: 2000
+
+  # Command for primary container
+  command: []
+
+  # Args for primary contaner
+  args: []
+
+  # List of ports for the primary container
+  ports:
+    http:
+      containerPort: 8080
+      protocol: TCP
+      port: 80
+      exposed: true
+    actuator:
+      containerPort: 9000
+      protocol: TCP
+      port: 9000
+      exposed: true
+
+  # Networking using the host network
+  hostNetwork: false
+
+  # Graceful termination timeout
+  terminationGracePeriodSeconds: 10
+
+##########################################################
+# Add Storage volumes to the pods
+##########################################################
+persistence:
+  enabled: false
+  mountPVC: false
+  mountPath: "/"
+  name: ""
+  accessMode: ReadWriteOnce
+  ## If defined, storageClass: <storageClass>
+  ## If set to "-", storageClass: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClass spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "-"
+  additionalLabels:
+    # key: "value"
+  annotations:
+  #  "helm.sh/resource-policy": keep
+  storageSize: 8Gi
+  volumeMode: ""
+  volumeName: ""
+
+
+##########################################################
+# Service object for servicing pods
+##########################################################
+service:
+  enabled: true
+  type: ClusterIP
+
+##########################################################
+# Role Based Access Control (RBAC)
+##########################################################
+rbac:
+  enabled: true
+
+  # Service Account to use by pods
+  serviceAccount:
+    enabled: true
+
+##########################################################
+# Additional ConfigMaps
+##########################################################
+configMap:
+  enabled: true
+  files:
+    code-config:
+      key1: value1
+      key2: value2
+      myfile.json: |-
+        {
+          "key": "value"
+        }
+    dev-config:
+      key1: value1
+      key2: value2
+
+##########################################################
+# Additional Secrets
+##########################################################
+secret:
+  enabled: false
+  additionalLabels:
+    # key: value
+  annotations:
+    # key: value
+  files:
+#  nameSuffix of Secret
+    # credentials:
+    #   data:
+    #     secretKey1: secretValue1
+    #     secretKey2: secretValue2
+    # password:
+    #   data:
+    #     secretKey1: secretValue1
+    #     secretKey2: secretValue2
+    # apiKey:
+    #   stringData:
+    #     secretKey1: secretValue1
+    #     secretKey2: secretValue2
+    # secondApiKeu:
+    #   encodedData:
+    #     secretKey1: dGVzdFZhbHVl
+    #     secretKey2: dGVzdFZhbHVl
+
+##########################################################
+# Service Monitor to collect Prometheus metrices
+##########################################################
+serviceMonitor:
+  enabled: false
+
+  # Additional labels
+  additionalLabels:
+    # key: value
+
+  # Additional annotations
+  annotations:
+    # key: value
+
+  # List of the endpoints of service from which prometheus will scrape data
+  endpoints:
+  - interval: 5s
+    path: /actuator/prometheus
+    port: http
+
+##########################################################
+# HPA - Horizontal Pod Autoscaling
+##########################################################
+autoscaling:
+# enabled is a boolean flag for enabling or disabling autoscaling
+  enabled: true
+# minReplicas sets the minimum number of replicas
+  minReplicas: 1
+# maxReplicas sets the maximum number of replicas
+  maxReplicas: 10
+# metrics is the list of metrics used for hpa
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+         type: Utilization
+         averageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      target:
+         type: Utilization
+         averageUtilization: 60
+
+##########################################################
+# Certficate CRD to generate the certificate
+##########################################################
+certificate:
+  enabled: false
+
+##########################################################
+# PrometheusRule object for defining application
+# alerting rules
+##########################################################
+prometheusRule:
+  enabled: false
+
+##########################################################
+# External Secrets
+##########################################################
+externalSecret:
+  enabled: false
+
+##########################################################
+# Pod disruption budget - PDB
+##########################################################
+pdb:
+  enabled: true
+  minAvailable: 1
+# maxUnavailable: 1
+
+##########################################################
+# grafanaDashboard object for defining application
+# Grafana Dashboard
+##########################################################
+grafanaDashboard:
+  enabled: false
+
+istio:
+  virtualServices:
+    enabled: false
