@@ -22,7 +22,6 @@ jobs:
     container:
       image: docker://truemark/terraform-aws-pipe:latest
       env:
-        AWS_DEFAULT_REGION: "us-west-2"
         TF_INIT: "true"
         TF_DEBUG: "false"
         LOCAL_PATH: "terraform"
