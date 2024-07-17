@@ -42,7 +42,7 @@ jobs:
         env:
           AWS_REGION: ${{ vars.AWS_REGION }}
 
-      - uses: helmfile/helmfile-action@v1
+      - uses: helmfile/helmfile-action@v1.9.1
         with:
           helmfile-args: diff -f helmfile.yaml
           helmfile-workdirectory: helm
