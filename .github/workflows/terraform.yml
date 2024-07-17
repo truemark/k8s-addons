@@ -30,12 +30,27 @@ jobs:
         TF_DEBUG: "false"
         LOCAL_PATH: "terraform"
         DEBUG: "true"
-
+        TF_BACKEND_CONFIG: "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+        AWS_ACCOUNT_IDS: "${{ secrets.AWS_ACCOUNT_ID }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Add Backend Config
+        run: |
+          mkdir backends
+          echo "${{ secrets.TF_BACKEND_CONFIG }}" > "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+          cat "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
           aws-region: "us-east-2"
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: /pipe.sh
+        env:
+          COMMAND: "terraform plan -no-color -input=false"
