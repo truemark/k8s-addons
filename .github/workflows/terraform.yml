@@ -35,4 +35,3 @@ jobs:
           aws-region: "${{ vars.AWS_DEFAULT_REGION }}"
           role-to-assume: "${{ secrets.AWS_ASSUME_ROLE }}"
           role-session-name: "gh-actions-terraform"
-
