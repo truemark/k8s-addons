@@ -19,6 +19,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: "stage"
     container:
       image: docker://truemark/terraform-aws-pipe:latest
       env:
@@ -26,8 +27,6 @@ jobs:
         TF_DEBUG: "false"
         LOCAL_PATH: "terraform"
         DEBUG: "true"
-    with:
-      environment: "stage"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
