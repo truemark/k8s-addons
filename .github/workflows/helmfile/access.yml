@@ -1,4 +1,4 @@
-name: 'helmfile'
+name: 'setup'
 
 # The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
 on:
@@ -26,22 +26,3 @@ jobs:
       - name: Setup Cluster Access
         run: |
           aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
-
-      - name: Helm Diff
-        uses: helmfile/helmfile-action@v1.9.1
-        with:
-          helmfile-args: diff -f helmfile.yaml
-          helmfile-workdirectory: helm
-          helm-plugins: >
-            https://github.com/databus23/helm-diff,
-            https://github.com/jkroepke/helm-secrets
-
-      - name: Helm apply
-        uses: helmfile/helmfile-action@v1.9.1
-        with:
-          helmfile-args: apply -f helmfile.yaml
-          helmfile-workdirectory: helm
-          helm-plugins: >
-            https://github.com/databus23/helm-diff,
-            https://github.com/jkroepke/helm-secrets
-

@@ -17,8 +17,16 @@ permissions:
 
 
 jobs:
-  deploy-stage:
-    uses: ./.github/workflows/helmfile.yml
+  setup-access-stage:
+    name: setup access
+    uses: ./.github/workflows/helmfile/access.yml
+    with:
+      environment: "stage"
+    secrets: inherit
+  diff-stage:
+    name: helm diff
+    needs: setup-access-stage
+    uses: ./.github/workflows/helmfile/diff.yml
     with:
       environment: "stage"
     secrets: inherit
