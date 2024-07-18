@@ -31,7 +31,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
-          aws-region: "us-east-2"
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       - name: Setup Cluster Access
         run: |
@@ -40,7 +40,7 @@ jobs:
           echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
         env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
 
       - uses: helmfile/helmfile-action@v1.9.1
         with:
