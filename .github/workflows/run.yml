@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/helmfile.yml
     with:
       environment: "stage"
+    secrets: inherit
 #  deploy-prod:
 #    uses: ./.github/workflows/helmfile.yml
 #    with:
