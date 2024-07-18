@@ -6,11 +6,12 @@ helmDefaults:
 
 repositories:
   - name: truemark
-    url: https://github.com/truemark/helm-charts
+    url: public.ecr.aws/truemark/k8s-app
 
 releases:
   - name: k8s-app
     namespace: k8s-app
     chart: truemark/k8s-app
+    version: 0.0.1-rc
     values:
       - values.yaml
