@@ -1,0 +1,33 @@
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "helm/**"
+      - ".github/workflows/helmfile.yml"
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "helm/**"
+      - ".github/workflows/helmfile.yml"
+    branches:
+      - main
+
+
+permissions:
+  checks: write
+  id-token: write
+  contents: read
+  pull-requests: write
+  issues: read
+
+
+jobs:
+  deploy-stage:
+    uses: ./.github/workflows/helmfile.yml
+    with:
+      environment: "stage"
+  deploy-prod:
+    uses: ./.github/workflows/helmfile.yml
+    with:
+      environment: "prod"

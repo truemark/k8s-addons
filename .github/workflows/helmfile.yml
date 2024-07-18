@@ -2,27 +2,18 @@ name: 'helmfile'
 
 # The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
 on:
-  push:
-    paths:
-      - "helm/**"
-      - ".github/workflows/helmfile.yml"
-    branches:
-      - main
-  pull_request:
-    paths:
-      - "helm/**"
-      - ".github/workflows/helmfile.yml"
-    branches:
-      - main
-
-permissions:
-  id-token: write
-  contents: write
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "The environment to deploy to"
+        default: "stage"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
-    environment: "stage"
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,10 +28,22 @@ jobs:
         run: |
           aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
 
-      - uses: helmfile/helmfile-action@v1.9.1
+
+      - name: Helm Diff
+        uses: helmfile/helmfile-action@v1.9.1
         with:
           helmfile-args: diff -f helmfile.yaml
           helmfile-workdirectory: helm
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
+
+      - name: Helm apply
+        uses: helmfile/helmfile-action@v1.9.1
+        with:
+          helmfile-args: apply -f helmfile.yaml
+          helmfile-workdirectory: helm
+          helm-plugins: >
+            https://github.com/databus23/helm-diff,
+            https://github.com/jkroepke/helm-secrets
+      
