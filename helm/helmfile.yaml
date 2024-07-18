@@ -6,7 +6,7 @@ helmDefaults:
 
 repositories:
   - name: truemark
-    url: public.ecr.aws/truemark/k8s-app
+    url: public.ecr.aws/truemark
     oci: true
 
 releases:
