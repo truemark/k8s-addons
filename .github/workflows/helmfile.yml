@@ -38,8 +38,6 @@ jobs:
           aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
 
       - uses: helmfile/helmfile-action@v1.9.1
-        env:
-          KUBECONFIG: "./kubeconfig"
         with:
           helmfile-args: diff -f helmfile.yaml
           helmfile-version: 'v0.150.0'
