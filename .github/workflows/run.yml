@@ -1,15 +1,9 @@
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "helm/**"
-      - ".github/workflows/helmfile.yml"
     branches:
       - main
   pull_request:
-    paths:
-      - "helm/**"
-      - ".github/workflows/helmfile.yml"
     branches:
       - main
 
