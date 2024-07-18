@@ -1,61 +1,61 @@
-#name: 'cluster'
-#
-## The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
-#on:
-#  push:
-#    paths:
-#      - "terraform/**"
-#      - ".github/workflows/terraform.yml"
-#    branches:
-#      - main
-#  pull_request:
-#    paths:
-#      - "terraform/**"
-#      - ".github/workflows/terraform.yml"
-#    branches:
-#      - main
-#
-#permissions:
-#  id-token: write
-#  contents: write
-#
-#jobs:
-#  test:
-#    runs-on: ubuntu-latest
-#    environment: "stage"
-#    container:
-#      image: docker://truemark/terraform-aws-pipe:latest
-#      env:
-#        TF_INIT: "true"
-#        TF_DEBUG: "false"
-#        LOCAL_PATH: "terraform"
-#        DEBUG: "true"
-#        TF_BACKEND_CONFIG: "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#        AWS_ACCOUNT_IDS: "${{ secrets.AWS_ACCOUNT_ID }}"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Add Backend Config
-#        run: |
-#          mkdir -p terraform/backends
-#          echo "${{ secrets.BACKEND_CONFIG_TFVARS }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#          echo "${{ secrets.TERRAFORM_TFVARS }}" > "terraform/terraform.tfvars"
-#          cat "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#          cat terraform/terraform.tfvars
-#
-#      - name: Configure AWS Credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
-#          aws-region: "us-east-2"
-#
-#      - name: Terraform Validate
-#        id: validate
-#        run: terraform validate -no-color
-#
-#      - name: Terraform Plan
-#        id: plan
-#        run: /pipe.sh
-#        env:
-#          COMMAND: "terraform plan -no-color -input=false"
+name: 'terraform'
+
+# The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
+on:
+  push:
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform.yml"
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform.yml"
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: "stage"
+    container:
+      image: docker://truemark/terraform-aws-pipe:latest
+      env:
+        TF_INIT: "true"
+        TF_DEBUG: "false"
+        LOCAL_PATH: "terraform"
+        DEBUG: "true"
+        TF_BACKEND_CONFIG: "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+        AWS_ACCOUNT_IDS: "${{ secrets.AWS_ACCOUNT_ID }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Add Backend Config
+        run: |
+          mkdir -p terraform/backends
+          echo "${{ secrets.BACKEND_CONFIG_TFVARS }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+          echo "${{ secrets.TERRAFORM_TFVARS }}" > "terraform/terraform.tfvars"
+          cat "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+          cat terraform/terraform.tfvars
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
+          aws-region: "us-east-2"
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: /pipe.sh
+        env:
+          COMMAND: "terraform plan -no-color -input=false"

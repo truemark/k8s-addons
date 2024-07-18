@@ -43,6 +43,8 @@ jobs:
           AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
 
       - uses: helmfile/helmfile-action@v1.9.1
+        env:
+          KUBECONFIG: "./kubeconfig"
         with:
           helmfile-args: diff -f helmfile.yaml
           helmfile-workdirectory: helm
