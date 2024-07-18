@@ -35,12 +35,7 @@ jobs:
 
       - name: Setup Cluster Access
         run: |
-          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }} --kubeconfig ./kubeconfig
-          echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
-          echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-        env:
-          AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
 
       - uses: helmfile/helmfile-action@v1.9.1
         env:
