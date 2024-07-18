@@ -21,9 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Helm Diff
         uses: helmfile/helmfile-action@v1.9.1
         with:
@@ -32,4 +29,3 @@ jobs:
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
-      
