@@ -6,7 +6,7 @@ on:
         type: string
         description: "The environment to deploy to"
       helmfilePath:
-        required: true
+        required: false
         type: string
         description: "The path to the helmfile.yaml file"
         default: "helmfile.yaml"
