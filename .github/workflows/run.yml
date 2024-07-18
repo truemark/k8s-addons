@@ -19,14 +19,14 @@ permissions:
 jobs:
   setup-access-stage:
     name: setup access
-    uses: ./.github/workflows/helmfile/access.yml
+    uses: ./.github/workflows/access.yml
     with:
       environment: "stage"
     secrets: inherit
   diff-stage:
     name: helm diff
     needs: setup-access-stage
-    uses: ./.github/workflows/helmfile/diff.yml
+    uses: ./.github/workflows/diff.yml
     with:
       environment: "stage"
     secrets: inherit
