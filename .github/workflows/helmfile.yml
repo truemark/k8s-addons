@@ -3,16 +3,16 @@ name: 'helmfile'
 # The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
 on:
   workflow_call:
-#    inputs:
-#      environment:
-#        required: true
-#        type: string
-#        description: "The environment to deploy to"
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "The environment to deploy to"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-#    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
