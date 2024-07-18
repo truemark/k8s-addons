@@ -35,7 +35,7 @@ jobs:
 
       - name: Setup Cluster Access
         run: |
-          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --kubeconfig ./kubeconfig
+          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }} --kubeconfig ./kubeconfig
           echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
           echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
