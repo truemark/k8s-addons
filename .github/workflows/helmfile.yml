@@ -40,8 +40,6 @@ jobs:
       - uses: helmfile/helmfile-action@v1.9.1
         with:
           helmfile-args: diff -f helmfile.yaml
-          helmfile-version: 'v0.150.0'
-          helm-version: 'v3.8.0'
           helmfile-workdirectory: helm
           helm-plugins: >
             https://github.com/databus23/helm-diff,
