@@ -19,9 +19,8 @@ permissions:
 jobs:
   deploy-stage:
     uses: ./.github/workflows/helmfile.yml
-    with:
-      environment: "stage"
-  deploy-prod:
-    uses: ./.github/workflows/helmfile.yml
-    with:
-      environment: "prod"
+    environment: stage
+#  deploy-prod:
+#    uses: ./.github/workflows/helmfile.yml
+#    with:
+#      environment: "prod"
