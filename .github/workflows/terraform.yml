@@ -29,10 +29,10 @@ jobs:
       - name: Add Backend Config
         run: |
           mkdir -p terraform/backends
-          printf '%s\n' "${{ secrets.BACKEND_CONFIG_TFVARS }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-          printf '%s\n' "${{ secrets.TERRAFORM_TFVARS }}" > "terraform/terraform.tfvars"
+          printf "%s\n" "${{ secrets.BACKEND_CONFIG_TFVARS }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
+          printf "%s\n" "${{ secrets.TERRAFORM_TFVARS }}" > "terraform/terraform.tfvars"
           cat "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-          cat terraform/terraform.tfvars"
+          cat "terraform/terraform.tfvars"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
