@@ -13,6 +13,8 @@ data "terraform_remote_state" "eks" {
     key    = var.remote_state_key
     region = var.region
   }
+
+  workspace = var.remote_state_workspace
 }
 
 data "aws_eks_cluster_auth" "cluster" {
