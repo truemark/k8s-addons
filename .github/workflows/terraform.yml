@@ -28,6 +28,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - uses: terraform-cache/terraform-cache@v1
+
       - name: Terraform Init
         run: |
           terraform -chdir=terraform init \
@@ -73,6 +75,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+
+      - uses: terraform-cache/terraform-cache@v1
 
       - name: Terraform Init
         run: |
