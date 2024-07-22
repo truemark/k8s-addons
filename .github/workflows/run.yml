@@ -17,39 +17,15 @@ permissions:
 
 
 jobs:
-  stage:
-    name: stage
-    runs-on: ubuntu-latest
-    environment: stage
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup cluster Access
-        uses: ./.github/workflows/access.yml
-        with:
-          environment: "stage"
-
-      - name: Helmfile diff
-        uses: ./.github/workflows/diff.yml
-        with:
-          environment: "stage"
-
-
-#  setup-access-stage:
-#    name: setup access
-#    uses: ./.github/workflows/access.yml
-#    with:
-#      environment: "stage"
-#    secrets: inherit
-#  diff-stage:
-#    name: helm diff
-#    needs: setup-access-stage
-#    uses: ./.github/workflows/diff.yml
-#    with:
-#      environment: "stage"
-#    secrets: inherit
-#  deploy-prod:
-#    uses: ./.github/workflows/helmfile.yml
-#    with:
-#      environment: "prod"
+  stage-helm:
+    name: run helmfile
+    uses: ./.github/workflows/helmfile.yml
+    with:
+      environment: "stage"
+    secrets: inherit
+  stage-terraform:
+    name: run terraform
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: "stage"
+    secrets: inherit
