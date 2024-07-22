@@ -10,18 +10,11 @@ on:
         default: "stage"
 
 jobs:
-  test:
+  terraform-plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-#    container:
-#      image: docker://truemark/terraform-aws-pipe:latest
-#      env:
-#        TF_INIT: "true"
-#        TF_DEBUG: "false"
-#        LOCAL_PATH: "terraform"
-#        DEBUG: "true"
-#        TF_BACKEND_CONFIG: "backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#        AWS_ACCOUNT_IDS: "${{ secrets.AWS_ACCOUNT_ID }}"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -50,6 +43,11 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: /pipe.sh
-        env:
-          COMMAND: "terraform plan -no-color -input=false"
+        run: terraform -chdir=terraform plan -detailed-exitcode -compact-warnings -no-color -out=out.tfplan
+
+      - name: Publish Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: terraform/out.tfplan
+
