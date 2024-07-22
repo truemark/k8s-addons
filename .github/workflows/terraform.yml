@@ -26,38 +26,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: |
-          terraform init \
+          terraform -chdir=terraform init \
             -backend-config="bucket=${{ vars.TF_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_DEFAULT_REGION }}" \
             -backend-config="keys=${{ vars.TF_STATE_KEY }}" \
             -backend-config="encrypt=true" \
             -backend-config="dynamodb_table=${{ vars.TF_DYNAMODB_TABLE }}"
 
-#      - name: Add Backend Config
-#        run: |
-#          mkdir -p terraform/backends
-#          echo "${{ secrets.BACKEND_CONFIG_TFVARS }}" > "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#          echo "${{ secrets.TERRAFORM_TFVARS }}" > '"terraform/terraform.tfvars"'
-#          cat "terraform/backends/${{ secrets.AWS_ACCOUNT_ID }}.tfvars"
-#          cat terraform/terraform.tfvars
-#
-#      - name: Configure AWS Credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
-#          aws-region: "us-east-2"
-#
-#      - name: Terraform Validate
-#        id: validate
-#        run: terraform validate -no-color
-#
-#      - name: Terraform Plan
-#        id: plan
-#        run: /pipe.sh
-#        env:
-#          COMMAND: "terraform plan -no-color -input=false"
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: /pipe.sh
+        env:
+          COMMAND: "terraform plan -no-color -input=false"
