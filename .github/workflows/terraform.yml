@@ -98,6 +98,4 @@ jobs:
 
       # Terraform Apply
       - name: Terraform Apply
-        run: |
-          ls
-          terraform -chdir=terraform apply -auto-approve out.tfplan
+        run: terraform -chdir=terraform apply -auto-approve ../out.tfplan
