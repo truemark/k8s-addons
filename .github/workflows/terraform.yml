@@ -43,6 +43,9 @@ jobs:
 
       - name: Terraform Plan
         id: plan
+        env:
+          TF_VAR_remote_state_bucket: ${{ vars.TF_VAR_REMOTE_STATE_BUCKET }}
+          TF_VAR_remote_state_key: ${{ vars.TF_VAR_REMOTE_STATE_KEY }}
         run: terraform -chdir=terraform plan -detailed-exitcode -compact-warnings -no-color -out=out.tfplan
 
       - name: Publish Terraform Plan
