@@ -10,8 +10,8 @@ on:
         default: "stage"
 
 jobs:
-  terraform:
-    name: Terraform
+  terraform-plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
@@ -59,4 +59,43 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
+        run: terraform -chdir=terraform apply -auto-approve out.tfplan
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: [ terraform-plan ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - uses: terraform-cache/terraform-cache@v1
+
+      - name: Terraform Init
+        run: |
+          terraform -chdir=terraform init \
+            -backend-config="bucket=${{ vars.TF_BUCKET }}" \
+            -backend-config="region=${{ vars.AWS_DEFAULT_REGION }}" \
+            -backend-config="key=${{ vars.TF_STATE_KEY }}" \
+            -backend-config="encrypt=true" \
+            -backend-config="dynamodb_table=${{ vars.TF_DYNAMODB_TABLE }}"
+
+      # Download saved plan from artifacts
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+
+      # Terraform Apply
+      - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve out.tfplan
