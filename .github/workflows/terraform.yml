@@ -90,12 +90,10 @@ jobs:
             -backend-config="encrypt=true" \
             -backend-config="dynamodb_table=${{ vars.TF_DYNAMODB_TABLE }}"
 
-      # Download saved plan from artifacts
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
         with:
           name: tfplan
 
-      # Terraform Apply
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve ../out.tfplan
