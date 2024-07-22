@@ -40,7 +40,7 @@ jobs:
           terraform -chdir=terraform init \
             -backend-config="bucket=${{ vars.TF_BUCKET }}" \
             -backend-config="region=${{ vars.AWS_DEFAULT_REGION }}" \
-            -backend-config="keys=${{ vars.TF_STATE_KEY }}" \
+            -backend-config="key=${{ vars.TF_STATE_KEY }}" \
             -backend-config="encrypt=true" \
             -backend-config="dynamodb_table=${{ vars.TF_DYNAMODB_TABLE }}"
 
