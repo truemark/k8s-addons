@@ -9,10 +9,6 @@ on:
         type: string
         default: "stage"
 
-permissions:
-  id-token: write
-  contents: write
-
 jobs:
   test:
     runs-on: ubuntu-latest
