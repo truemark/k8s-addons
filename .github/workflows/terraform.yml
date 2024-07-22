@@ -2,18 +2,7 @@ name: 'terraform'
 
 # The workflow should only trigger on pull requests merges to the main branch and any file changes to the defined path
 on:
-  push:
-    paths:
-      - "terraform/**"
-      - ".github/workflows/terraform.yml"
-    branches:
-      - main
-  pull_request:
-    paths:
-      - "terraform/**"
-      - ".github/workflows/terraform.yml"
-    branches:
-      - main
+  workflow_call:
 
 permissions:
   id-token: write
