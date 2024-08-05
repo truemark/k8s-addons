@@ -12,7 +12,7 @@ on:
         default: "raw_manifests"
 
 jobs:
-  helmfile-diff:
+  kubectl:
     name: Helmfile Diff
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
