@@ -5,7 +5,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   destination:
     name: ''
@@ -13,7 +13,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   sources:
     - path: argocd/apps
-      repoURL: https://github.com/truemark/k8s-addons'
+      repoURL: 'public.ecr.aws/truemark/k8s-app'
       targetRevision: feat/terraform-pipeline
       helm:
         valueFiles:
