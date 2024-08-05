@@ -35,7 +35,6 @@ jobs:
 
       - name: run manifest
         run: |
-          kubectl get ns
           kubectl apply -f ${{ inputs.manifestPath }}
 
   
