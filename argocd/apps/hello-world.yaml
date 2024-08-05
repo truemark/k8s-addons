@@ -13,7 +13,8 @@ spec:
     server: 'https://kubernetes.default.svc'
   sources:
     - path: argocd/apps
-      repoURL: 'public.ecr.aws/truemark/k8s-app'
+      repoURL: 'public.ecr.aws/truemark'
+      chart: k8s-app
       targetRevision: 0.0.1-rc
       helm:
         valueFiles:
