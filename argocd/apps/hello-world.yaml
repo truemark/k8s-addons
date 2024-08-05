@@ -14,7 +14,7 @@ spec:
   sources:
     - path: argocd/apps
       repoURL: 'public.ecr.aws/truemark/k8s-app'
-      targetRevision: feat/terraform-pipeline
+      targetRevision: 0.0.1-rc
       helm:
         valueFiles:
           - $values/values/values.yml
