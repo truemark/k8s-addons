@@ -13,7 +13,7 @@ on:
 
 jobs:
   kubectl:
-    name: Helmfile Diff
+    name: kubectl
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -36,6 +36,7 @@ jobs:
       - name: run manifest
         run: |
           kubectl get ns
+          kubectl apply -f ${{ inputs.manifestPath }}
 
   
 
