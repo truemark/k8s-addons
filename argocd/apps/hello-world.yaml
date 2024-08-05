@@ -18,11 +18,10 @@ spec:
       targetRevision: 0.0.1-rc
       helm:
         valueFiles:
-          - $values/values.yml
+          - $values/argocd/values/values.yml
     - repoURL: 'https://github.com/truemark/k8s-addons.git'
       targetRevision: feat/terraform-pipeline
       ref: values
-      path: argocd/values
   project: default
   syncPolicy:
     automated:
