@@ -33,4 +33,5 @@ jobs:
     name: run kubectl
     uses: ./.github/workflows/kubectl.yml
     with:
-      environment: "stage
+      environment: "stage"
+    secrets: inherit
