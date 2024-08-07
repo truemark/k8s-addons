@@ -23,15 +23,15 @@ jobs:
     with:
       environment: "stage"
     secrets: inherit
-  stage-terraform:
-    name: run terraform
-    uses: ./.github/workflows/terraform.yml
-    with:
-      environment: "stage"
-    secrets: inherit
-  stage-kubectl:
-    name: run kubectl
-    uses: ./.github/workflows/kubectl.yml
-    with:
-      environment: "stage"
-    secrets: inherit
+#  stage-terraform:
+#    name: run terraform
+#    uses: ./.github/workflows/terraform.yml
+#    with:
+#      environment: "stage"
+#    secrets: inherit
+#  stage-kubectl:
+#    name: run kubectl
+#    uses: ./.github/workflows/kubectl.yml
+#    with:
+#      environment: "stage"
+#    secrets: inherit
