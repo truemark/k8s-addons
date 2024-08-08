@@ -15,14 +15,10 @@ on:
         type: string
         description: "The directory where the helmfile.yaml file is located"
         default: "helm"
-      helmfileArgs:
-        required: false
-        type: string
-        description: "The arguments to pass to helmfile"
-        default: "diff"
 
 jobs:
-  helmfile:
+  helmfile-diff:
+    name: Helmfile Diff
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -42,9 +38,36 @@ jobs:
       - name: Helm Diff
         uses: helmfile/helmfile-action@v1.9.1
         with:
-          helmfile-args: "${{ inputs.helmfileArgs }} -f ${{ inputs.helmfilePath }}"
+          helmfile-args: "diff -f ${{ inputs.helmfilePath }}"
           helmfile-workdirectory: ${{ inputs.helmWorkDirectory }}
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
       
+  helmfile-sync:
+    name: Helmfile Sync
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: [ helmfile-diff ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Setup Cluster Access
+        run: |
+          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Helm Sync
+        uses: helmfile/helmfile-action@v1.9.1
+        with:
+          helmfile-args: "sync -f ${{ inputs.helmfilePath }}"
+          helmfile-workdirectory: ${{ inputs.helmWorkDirectory }}
+          helm-plugins: >
+            https://github.com/databus23/helm-diff,
+            https://github.com/jkroepke/helm-secrets

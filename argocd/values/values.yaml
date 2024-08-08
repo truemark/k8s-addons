@@ -22,17 +22,7 @@ deployment:
   reloadOnChange: false
 
   # Select nodes to deploy which matches the following labels
-  # hello-world
-#  nodeSelector:
-#    nodepool: truemark-arm64
-    # node created hello-world | 2 / 4Gi | 1/1Gi | 3 /3
-    # hello-world2 (does not select np) |
-
-#  toleration:
-#    - key: "nodepool"
-#      operator: "Equal"
-#      value: "truemark-arm64"
-#      effect: "NoSchedule"
+  nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
 
   # Init containers which runs before the app container
@@ -164,7 +154,7 @@ deployment:
   # Image of the app container
   image:
     repository: pijain/helloworld
-    tag: latest
+    tag: 0.0.1
     pullPolicy: IfNotPresent
   dnsConfig:
     # options:

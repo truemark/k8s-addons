@@ -1,0 +1,41 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "The environment to deploy to"
+      manifestPath:
+        required: false
+        type: string
+        description: "The directory where the manifests are located"
+        default: "raw_manifests"
+
+jobs:
+  kubectl:
+    name: kubectl
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "${{ secrets.AWS_ASSUME_ROLE_DEPLOY }}"
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Setup Cluster Access
+        run: |
+          aws eks update-kubeconfig --name ${{ vars.CLUSTER_NAME }} --region ${{ vars.AWS_DEFAULT_REGION }}
+
+      - uses: azure/setup-kubectl@v4
+        id: install
+
+      - name: run manifest
+        run: |
+          kubectl apply -f ${{ inputs.manifestPath }}
+
+  
+

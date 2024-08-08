@@ -1,6 +1,6 @@
 helmDefaults:
   createNamespace: true
-  verify: true
+  verify: false
   wait: true
   timeout: 300
 
@@ -10,7 +10,7 @@ repositories:
     oci: true
 
 releases:
-  - name: k8s-app
+  - name: hello-world
     namespace: k8s-app
     chart: truemark/k8s-app
     version: 0.0.1-rc

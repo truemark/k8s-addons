@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: staging
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  destination:
+    name: ''
+    namespace: argo-demo
+    server: 'https://kubernetes.default.svc'
+  sources:
+    - path: argocd/apps
+      repoURL: 'public.ecr.aws/truemark'
+      chart: k8s-app
+      targetRevision: 0.0.1-rc
+      helm:
+        valueFiles:
+          - $values/argocd/values/values.yaml
+    - repoURL: 'https://github.com/truemark/k8s-addons.git'
+      targetRevision: feat/terraform-pipeline
+      ref: values
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
